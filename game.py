@@ -100,10 +100,14 @@ fighter_2 = Fighter(2, 700, 310, True, WIZARD_DATA, wizard_sheet, WIZARD_ANIMATI
 
 # game loop
 def runGame():
+    fitnessScore = 0
     global fighter_1, fighter_2, intro_count, round_over, last_count_update, round_over_time
     run = True
+    start = time.time()
     while run:
-
+        curTime = time.time()
+        if curTime - start >= 20:
+            run = False
         clock.tick(FPS)
 
         # draw background
@@ -150,11 +154,10 @@ def runGame():
             # display victory image
             screen.blit(victory_img, (360, 150))
             if pygame.time.get_ticks() - round_over_time > ROUND_OVER_COOLDOWN:
-                run=False
+                run = False
                 intro_count = 3
                 fighter_1 = Fighter(1, 200, 310, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx)
                 fighter_2 = Fighter(2, 700, 310, True, WIZARD_DATA, wizard_sheet, WIZARD_ANIMATION_STEPS, magic_fx)
-
 
         # event handler
         for event in pygame.event.get():
@@ -163,4 +166,10 @@ def runGame():
 
         # update display
         pygame.display.update()
-
+    end = time.time()
+    fitnessScore = ((end - start) * -0.3) + fighter_1.jumps + fighter_2.jumps + (100 - fighter_1.health) + (
+                100 - fighter_2.health)
+    print(end-start)
+    print(fitnessScore)
+    return fitnessScore
+# runGame()
