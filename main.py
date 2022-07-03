@@ -2,11 +2,11 @@ import multiprocessing
 import Specimen
 
 
-def get_fitness(specimen):
+def get_fitness(group):
     """
   Fitness function used in training.
   """
-    return specimen.calc_fitness()
+    return group.calc_fitness()
 
 
 # Let's say that our population size is 200. That means there are 200 different

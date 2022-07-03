@@ -11,7 +11,7 @@ OFFSETS = [
 
 
 class Specimen:
-    def __init__(self):
+    def __init__(self, group):
         """
         Create a specimen (i.e., one of John Green Bot's brains)
 

@@ -26,8 +26,8 @@ class Group:
         # self.NHIDDEN = 1
         # self.HIDDENSIZE = 15
 
-        self.s1 = Specimen
-        self.s2 = Specimen
+        self.s1 = Specimen(self)
+        self.s2 = Specimen(self)
 
         self.NINPUTS = 25
         self.NOUTPUTS = 5
