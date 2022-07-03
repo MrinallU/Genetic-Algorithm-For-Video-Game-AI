@@ -1,15 +1,8 @@
 # STEP 2.1
-import pygame
-from pygame import mixer
-from fighter import Fighter
-import math, random, time, copy, multiprocessing, itertools, sys, PIL
-import networkx as nx
-import matplotlib.pyplot as plt
-import IPython, io, os
+import random
+
 import numpy as np
-import game
-from urllib.request import urlopen
-from io import BytesIO
+import pygame
 
 # Offset for calculating items relative to John Green Bot
 OFFSETS = [
@@ -27,6 +20,10 @@ class Specimen:
 
         5 outputs: 5 moves (x, y, aim_x, aim_y, blast)
         """
+        # self.NINPUTS = 25
+        # self.NOUTPUTS = 5
+        # self.NHIDDEN = 1
+        # self.HIDDENSIZE = 15
         self.NINPUTS = 25
         self.NOUTPUTS = 5
         self.NHIDDEN = 1
@@ -95,52 +92,3 @@ class Specimen:
             if (random.random() < PROB):
                 self.outputBias[i] += random.gauss(0.0, RATE)
 
-    def calc_fitness(self, doRender=False):
-        """
-        This function calculates the fitness (i.e., the smartness) of the specimen
-        by playing the game and returning the final score.
-        """
-        game.runGame()
-        return game.run(specimen=self, doRender=doRender)
-
-    def min_offset(self, point1, point2):
-        """
-        Helper function for apply_input
-        """
-        candidates = (point2 - point1 + v for v in OFFSETS)
-        return min(candidates, key=lambda v: v.length_squared())
-
-    def apply_input(self, game):
-        """
-        This function takes the game state, loads it into the neural network,
-        computes the output, and performs the output actions.
-        """
-        john_green_bot = game.john_green_bot
-
-        offsets = {a: self.min_offset(john_green_bot.position, a.position) for a in game.trash_list}
-
-        trash_list = sorted(game.trash_list, key=lambda a: offsets[a].length_squared())
-        visible_trash = []
-        if len(trash_list) > 5: visible_trash = trash_list[0:4]
-
-        # Get all the trash and add them as inputs to the neural network
-        for i in range(len(visible_trash)):
-            self.inputValues[5 * i + 0] = offsets[visible_trash[i]].x
-            self.inputValues[5 * i + 1] = offsets[visible_trash[i]].y
-            self.inputValues[5 * i + 2] = visible_trash[i].moveDirection.x if abs(
-                visible_trash[i].moveDirection.x) > 0.5 else 0
-            self.inputValues[5 * i + 3] = visible_trash[i].moveDirection.y if abs(
-                visible_trash[i].moveDirection.y) > 0.5 else 0
-            self.inputValues[5 * i + 4] = visible_trash[i].radius
-
-        for i in range(len(visible_trash) * 5, 5 * 5):
-            self.inputValues[i] = 0.0
-
-        # Compute the output
-        self.evaluate()
-
-        # Actually do the recommended actions
-        john_green_bot.moveDirection.x = self.outputValues[0]
-        john_green_bot.moveDirection.y = self.outputValues[1]
-        john_green_bot.rotation = -math.degrees(math.atan2(self.outputValues[3], self.outputValues[2]))
-        john_green_bot.is_blasting = self.outputValues[4] > 0.5

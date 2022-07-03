@@ -1,13 +1,9 @@
+import time
+
 import pygame
 from pygame import mixer
+
 from fighter import Fighter
-import math, random, time, copy, multiprocessing, itertools, sys, PIL
-import networkx as nx
-import matplotlib.pyplot as plt
-import IPython, io, os
-import numpy as np
-from urllib.request import urlopen
-from io import BytesIO
 
 mixer.init()
 pygame.init()
@@ -132,6 +128,7 @@ def runGame():
                 intro_count -= 1
                 last_count_update = pygame.time.get_ticks()
 
+        #
         # update fighters
         fighter_1.update()
         fighter_2.update()
