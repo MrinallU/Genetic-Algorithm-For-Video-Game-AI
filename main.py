@@ -1,5 +1,5 @@
 import multiprocessing
-import Specimen
+from ML import Specimen
 
 
 def get_fitness(group):

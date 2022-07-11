@@ -2,6 +2,7 @@ import pygame
 
 class Fighter():
     def __init__(self, player, x, y, flip, data, sprite_sheet, animation_steps, sound):
+        self.vel_x = 0
         self.player = player
         self.size = data[0]
         self.image_scale = data[1]
@@ -37,7 +38,7 @@ class Fighter():
             animation_list.append(temp_img_list)
         return animation_list
 
-    def move(self, screen_width, screen_height, surface, target, round_over):
+    def move(self, screen_width, screen_height, surface, target, round_over, nnInstructions):
         SPEED = 10
         GRAVITY = 2
         dx = 0
@@ -55,10 +56,14 @@ class Fighter():
                 # movement
                 if key[pygame.K_a]:
                     dx = -SPEED
+                    self.vel_x = -SPEED
                     self.running = True
                 if key[pygame.K_d]:
                     dx = SPEED
+                    self.vel_x = SPEED
                     self.running = True
+                if not self.running:
+                    self.vel_x = 0
                 # jump
                 if key[pygame.K_w] and self.jump == False:
                     self.vel_y = -30
@@ -77,10 +82,15 @@ class Fighter():
                 # movement
                 if key[pygame.K_LEFT]:
                     dx = -SPEED
+                    self.vel_x = -SPEED
                     self.running = True
                 if key[pygame.K_RIGHT]:
                     dx = SPEED
+                    self.vel_x = SPEED
                     self.running = True
+                if not self.running:
+                    self.vel_x = 0
+
                 # jump
                 if key[pygame.K_UP] and self.jump == False:
                     self.vel_y = -30

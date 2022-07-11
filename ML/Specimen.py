@@ -12,19 +12,7 @@ OFFSETS = [
 
 class Specimen:
     def __init__(self, group):
-        """
-        Create a specimen (i.e., one of John Green Bot's brains)
-
-        25 inputs: 5 attributes (x, y, x_vel, y_vel, radius) of nearest trash
-        objects
-
-        5 outputs: 5 moves (x, y, aim_x, aim_y, blast)
-        """
-        # self.NINPUTS = 25
-        # self.NOUTPUTS = 5
-        # self.NHIDDEN = 1
-        # self.HIDDENSIZE = 15
-        self.NINPUTS = 25
+        self.NINPUTS = 8
         self.NOUTPUTS = 5
         self.NHIDDEN = 1
         self.HIDDENSIZE = 15

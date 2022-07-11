@@ -3,10 +3,10 @@ import time
 import pygame
 from pygame import mixer
 
-from fighter import Fighter
+from Game.fighter import Fighter
 
 
-class Group:
+class Game:
     def __init__(self):
         self.scaled_bg = None
         self.round_over_time = None
@@ -21,6 +21,7 @@ class Group:
         self.pygame.display.set_caption("Brawler")
 
         # set framerate
+        self.timer = 0
         self.clock = pygame.time.Clock()
         self.FPS = 60
 
@@ -47,23 +48,23 @@ class Group:
         self.WIZARD_DATA = [self.WIZARD_SIZE, self.WIZARD_SCALE, self.WIZARD_OFFSET]
 
         # load music and sounds
-        pygame.mixer.music.load("assets/audio/music.mp3")
+        pygame.mixer.music.load("../assets/audio/music.mp3")
         pygame.mixer.music.set_volume(0.5)
         pygame.mixer.music.play(-1, 0.0, 5000)
-        self.sword_fx = pygame.mixer.Sound("assets/audio/sword.wav")
+        self.sword_fx = pygame.mixer.Sound("../assets/audio/sword.wav")
         self.sword_fx.set_volume(0.5)
-        self.magic_fx = pygame.mixer.Sound("assets/audio/magic.wav")
+        self.magic_fx = pygame.mixer.Sound("../assets/audio/magic.wav")
         self.magic_fx.set_volume(0.75)
 
         # load background image
-        self.bg_image = pygame.image.load("assets/images/background/background.jpg").convert_alpha()
+        self.bg_image = pygame.image.load("../assets/images/background/background.jpg").convert_alpha()
 
         # load spritesheets
-        self.warrior_sheet = pygame.image.load("assets/images/warrior/Sprites/warrior.png").convert_alpha()
-        self.wizard_sheet = pygame.image.load("assets/images/wizard/Sprites/wizard.png").convert_alpha()
+        self.warrior_sheet = pygame.image.load("../assets/images/warrior/Sprites/warrior.png").convert_alpha()
+        self.wizard_sheet = pygame.image.load("../assets/images/wizard/Sprites/wizard.png").convert_alpha()
 
         # load vicory image
-        self.victory_img = pygame.image.load("assets/images/icons/victory.png").convert_alpha()
+        self.victory_img = pygame.image.load("../assets/images/icons/victory.png").convert_alpha()
 
         # define number of steps in each animation
         self.WARRIOR_ANIMATION_STEPS = [10, 8, 1, 7, 7, 3, 7]
@@ -100,12 +101,13 @@ class Group:
 
     # game loop
     def runGame(self, AI):
-        fitnessScore = 0
         run = True
         start = time.time()
+
         while run:
             curTime = time.time()
             if curTime - start >= 20:
+                self.timer = curTime - start
                 run = False
             self.clock.tick(self.FPS)
 
@@ -118,11 +120,14 @@ class Group:
             self.draw_text("P1: " + str(self.score[0]), self.score_font, self.RED, 20, 60)
             self.draw_text("P2: " + str(self.score[1]), self.score_font, self.RED, 580, 60)
 
+            data = AI.apply_input(self)
             # update countdown
             if self.intro_count <= 0:
                 # move fighters
-                self.fighter_1.move(self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.screen, self.fighter_2, self.round_over)
-                self.fighter_2.move(self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.screen, self.fighter_1, self.round_over)
+                self.fighter_1.move(self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.screen, self.fighter_2,
+                                    self.round_over, data[0])
+                self.fighter_2.move(self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.screen, self.fighter_1,
+                                    self.round_over, data[1])
             else:
                 # display count timer
                 self.draw_text(str(self.intro_count), self.count_font, self.RED, self.SCREEN_WIDTH / 2,
@@ -132,7 +137,6 @@ class Group:
                     self.intro_count -= 1
                     self.last_count_update = pygame.time.get_ticks()
 
-            # AI.applyInput for the players.
             # update fighters
             self.fighter_1.update()
             self.fighter_2.update()
@@ -170,11 +174,10 @@ class Group:
 
             # update display
             pygame.display.update()
+
         end = time.time()
         fitnessScore = ((end - start) * -0.3) + self.fighter_1.jumps + self.fighter_2.jumps + (
-                    100 - self.fighter_1.health) + (
+                100 - self.fighter_1.health) + (
                                100 - self.fighter_2.health)
-        print(end - start)
-        print(fitnessScore)
         return fitnessScore
     # runGame()
