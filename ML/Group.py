@@ -3,7 +3,7 @@ import numpy as np
 import pygame
 
 from Game.game import Game
-from Specimen import Specimen
+from ML.Specimen import Specimen
 
 # Offset for calculating items relative to John Green Bot
 OFFSETS = [
@@ -17,14 +17,14 @@ class Group:
         Create a Group of Players
 
         8 inputs: 8 attributes  (x, y, xVel, yVel, jumping attacking, health, time) of the other player
-        5 outputs: 5 moves (x, y, jump, a1, a2)
+        5 outputs: 5 moves (x, jump, a1)
         """
         self.game = Game()
         self.s1 = Specimen(self)
         self.s2 = Specimen(self)
 
         self.NINPUTS = 7
-        self.NOUTPUTS = 5
+        self.NOUTPUTS = 3
 
         self.inputValuesP2 = np.zeros((self.NINPUTS))
         self.inputValuesP1 = np.zeros((self.NINPUTS))

@@ -12,8 +12,8 @@ OFFSETS = [
 
 class Specimen:
     def __init__(self, group):
-        self.NINPUTS = 8
-        self.NOUTPUTS = 5
+        self.NINPUTS = 7
+        self.NOUTPUTS = 3
         self.NHIDDEN = 1
         self.HIDDENSIZE = 15
 
@@ -44,6 +44,7 @@ class Specimen:
             terms = np.array([self.activation(np.dot(terms, self.interLayers[j, :, i])) for j in
                               range(self.HIDDENSIZE)]) + self.interBiases[:, i]
         self.outputValues = np.dot(terms, self.outputLayer) + self.outputBias
+        return self.outputValues
 
     def mutate(self):
         """
