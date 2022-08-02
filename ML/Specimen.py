@@ -4,7 +4,6 @@ import random
 import numpy as np
 import pygame
 
-# Offset for calculating items relative to John Green Bot
 OFFSETS = [
     pygame.Vector2(x, y) for x in [-800, 0, 800] for y in [-800, 0, 800]
 ]
